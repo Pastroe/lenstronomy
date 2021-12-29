@@ -16,7 +16,8 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'CURVED_ARC_TAN_DIFF', 'ARC_PERT', 'coreBURKERT',
                      'CORED_DENSITY', 'CORED_DENSITY_2', 'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP',
                      'CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM',
-                     'CORED_DENSITY_ULDM_MST']
+                     'CORED_DENSITY_ULDM_MST',
+                     'BoxyDisky', 'Bending3', 'Fourier', 'PHT', 'LHT']
 
 
 class ProfileListBase(object):
@@ -297,6 +298,21 @@ class ProfileListBase(object):
         elif lens_type == 'CORED_DENSITY_ULDM_MST':
             from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
             return CoredDensityMST(profile_type='CORED_DENSITY_ULDM')
+        elif lens_type == 'BoxyDisky':
+            from lenstronomy.LensModel.Profiles.boxy_disky import BoxyDisky
+            return BoxyDisky()
+        elif lens_type == 'Bending3':
+            from lenstronomy.LensModel.Profiles.bending3 import Bending3
+            return Bending3()
+        elif lens_type == 'Fourier':
+            from lenstronomy.LensModel.Profiles.fourier import Fourier
+            return Fourier()
+        elif lens_type == 'PHT':
+            from lenstronomy.LensModel.Profiles.PHT import PHT
+            return PHT()
+        elif lens_type == 'LHT':
+            from lenstronomy.LensModel.Profiles.LHT import LHT
+            return LHT()
         else:
             raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))
 
