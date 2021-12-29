@@ -1,6 +1,7 @@
 from __future__ import print_function, division, absolute_import, unicode_literals
 __author__ = 'sibirrer'
 from lenstronomy.LensModel.single_plane import SinglePlane
+from lenstronomy.LensModel.galaxy_morph import GalaxyMorph
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import constants as const
@@ -13,7 +14,7 @@ class LensModel(object):
     class to handle an arbitrary list of lens models. This is the main lenstronomy LensModel API for all other modules.
     """
 
-    def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
+    def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None, galaxy_morph = False,
                  multi_plane=False, numerical_alpha_class=None, observed_convention_index=None,
                  z_source_convention=None, cosmo_interp=False, z_interp_stop=None, num_z_interp=100,
                  kwargs_interp=None):
@@ -45,6 +46,7 @@ class LensModel(object):
         distances
         """
         self.lens_model_list = lens_model_list
+        self.galaxy_morph = galaxy_morph
         self.z_lens = z_lens
         self.z_source = z_source
         self._z_source_convention = z_source_convention
@@ -65,6 +67,10 @@ class LensModel(object):
                                          z_source_convention=z_source_convention, cosmo_interp=cosmo_interp,
                                          z_interp_stop=z_interp_stop, num_z_interp=num_z_interp,
                                          kwargs_interp=kwargs_interp)
+        elif galaxy_morph is True:
+            self.lens_model = GalaxyMorph(lens_model_list, numerical_alpha_class=numerical_alpha_class,
+                                          lens_redshift_list=lens_redshift_list,
+                                          z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
         else:
             self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
                                           lens_redshift_list=lens_redshift_list,
@@ -88,7 +94,7 @@ class LensModel(object):
 
     def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None):
         """
-        Fermat potential (negative sign means earlier arrival time)
+        fermat potential (negative sign means earlier arrival time)
         for Multi-plane lensing, it computes the effective Fermat potential (derived from the arrival time and
         subtracted off the time-delay distance for the given cosmology). The units are given in arcsecond square.
 
@@ -109,25 +115,20 @@ class LensModel(object):
             raise ValueError('In multi-plane lensing you need to provide a specific z_lens and z_source for which the '
                              'effective Fermat potential is evaluated')
 
-    def arrival_time(self, x_image, y_image, kwargs_lens, kappa_ext=0, x_source=None, y_source=None):
+    def arrival_time(self, x_image, y_image, kwargs_lens, kappa_ext=0):
         """
-        Arrival time of images relative to a straight line without lensing.
-        Negative values correspond to images arriving earlier, and positive signs correspond to images arriving later.
 
         :param x_image: image position
         :param y_image: image position
         :param kwargs_lens: lens model parameter keyword argument list
         :param kappa_ext: external convergence contribution not accounted in the lens model that leads to the same
          observables in position and relative fluxes but rescales the time delays
-        :param x_source: source position (optional), otherwise computed with ray-tracing
-        :param y_source: source position (optional), otherwise computed with ray-tracing
         :return: arrival time of image positions in units of days
         """
         if hasattr(self.lens_model, 'arrival_time'):
             arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
         else:
-            fermat_pot = self.lens_model.fermat_potential(x_image, y_image, kwargs_lens, x_source=x_source,
-                                                          y_source=y_source)
+            fermat_pot = self.lens_model.fermat_potential(x_image, y_image, kwargs_lens)
             if not hasattr(self, '_lensCosmo'):
                 raise ValueError("LensModel class was not initialized with lens and source redshifts!")
             arrival_time = self._lensCosmo.time_delay_units(fermat_pot)

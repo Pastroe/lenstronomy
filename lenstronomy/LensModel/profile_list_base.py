@@ -299,19 +299,19 @@ class ProfileListBase(object):
             from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
             return CoredDensityMST(profile_type='CORED_DENSITY_ULDM')
         elif lens_type == 'BoxyDisky':
-            from lenstronomy.LensModel.Profiles.boxy_disky import BoxyDisky
+            from lenstronomy.LensModel.GalaxyMorph.boxy_disky import BoxyDisky
             return BoxyDisky()
         elif lens_type == 'Bending3':
-            from lenstronomy.LensModel.Profiles.bending3 import Bending3
+            from lenstronomy.LensModel.GalaxyMorph.bending3 import Bending3
             return Bending3()
         elif lens_type == 'Fourier':
-            from lenstronomy.LensModel.Profiles.fourier import Fourier
+            from lenstronomy.LensModel.GalaxyMorph.fourier import Fourier
             return Fourier()
         elif lens_type == 'PHT':
-            from lenstronomy.LensModel.Profiles.PHT import PHT
+            from lenstronomy.LensModel.GalaxyMorph.PHT import PHT
             return PHT()
         elif lens_type == 'LHT':
-            from lenstronomy.LensModel.Profiles.LHT import LHT
+            from lenstronomy.LensModel.GalaxyMorph.LHT import LHT
             return LHT()
         else:
             raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))

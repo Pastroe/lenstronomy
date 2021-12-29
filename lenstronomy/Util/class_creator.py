@@ -12,7 +12,7 @@ export, __all__ = exporter()
 
 @export
 def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_redshift_list=None,
-                           kwargs_interp=None,
+                           kwargs_interp=None, galaxy_morph = False,
                            multi_plane=False, observed_convention_index=None, source_light_model_list=[],
                            lens_light_model_list=[], point_source_model_list=[], fixed_magnification_list=None,
                            flux_from_point_source_list=None,
@@ -86,7 +86,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
             observed_convention_index_i = observed_convention_index
     lens_model_class = LensModel(lens_model_list=lens_model_list_i, z_lens=z_lens, z_source=z_source,
                                  lens_redshift_list=lens_redshift_list_i,
-                                 multi_plane=multi_plane, cosmo=cosmo,
+                                 multi_plane=multi_plane, galaxy_morph = galaxy_morph, cosmo=cosmo,
                                  observed_convention_index=observed_convention_index_i, kwargs_interp=kwargs_interp)
 
     if index_source_light_model_list is None or all_models is True:
