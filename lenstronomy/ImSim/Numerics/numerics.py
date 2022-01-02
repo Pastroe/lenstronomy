@@ -109,7 +109,7 @@ class Numerics(PointSourceRendering):
         """
 
         :param flux_array: 1d array, flux values corresponding to coordinates_evaluate
-        :param unconvolved: boolean, if True, does not apply a convolution
+        :param array_low_res_partial: regular sampled surface brightness, 1d array
         :return: convolved image on regular pixel grid, 2d array
         """
         # add supersampled region to lower resolution on

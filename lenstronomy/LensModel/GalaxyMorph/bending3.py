@@ -18,7 +18,6 @@ class Bending3(LensProfileBase):
     def __init__(self):
         self.r_min = 10**(-25)
         super(Bending3, self).__init__()
-        # alpha = 4*const.G * (mass*const.M_sun)/const.c**2/(r*const.Mpc)
 
     def mapping(self, x, y, Strength, center_x=0, center_y=0):
         """
@@ -31,3 +30,11 @@ class Bending3(LensProfileBase):
         x_ = x - center_x
         y_ = y - center_y
         return x_ + center_x, y_ + Strength * x_ ** 3 + center_y
+        
+    def param_dict(self, index):
+        p_dict = {}
+        for param in self.param_names:
+            if param not in ['center_x', 'center_y']:
+                p_dict[param] = param  + '_' + str(index)
+        return p_dict
+        

@@ -39,3 +39,10 @@ class PHT(LensProfileBase):
         x_rot = x_ * np.cos(theta_rot) + y_ * np.sin(theta_rot)
         y_rot =-x_ * np.sin(theta_rot) + y_ * np.cos(theta_rot)
         return x_rot + center_x, y_rot + center_y
+        
+    def param_dict(self, index):
+        p_dict = {}
+        for param in self.param_names:
+            if param not in ['center_x', 'center_y']:
+                p_dict[param] = param  + '_' + str(index)
+        return p_dict

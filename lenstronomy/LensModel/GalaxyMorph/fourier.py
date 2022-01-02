@@ -38,3 +38,10 @@ class Fourier(LensProfileBase):
         for i, m in enumerate(f_mode_list):
             F_scale = F_scale + f_coef_list[i] * np.cos(m * (theta_ + f_angl_list[i]))
         return (x - center_x) * F_scale + center_x, (y - center_y) * F_scale + center_y
+        
+    def param_dict(self, index):
+        p_dict = {}
+        for param in self.param_names:
+            if param not in ['center_x', 'center_y']:
+                p_dict[param] = param  + '_' + str(index)
+        return p_dict

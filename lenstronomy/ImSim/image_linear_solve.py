@@ -16,7 +16,7 @@ class ImageLinearFit(ImageModel):
     """
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, extinction_class=None, 
-                 kwargs_numerics=None, likelihood_mask=None,
+                 kwargs_numerics={}, likelihood_mask=None,
                  psf_error_map_bool_list=None, kwargs_pixelbased=None):
         """
 
@@ -221,7 +221,7 @@ class ImageLinearFit(ImageModel):
         if check_positive_flux is True:
             bool = self.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
             if bool is False:
-                logL -= 10**8
+                logL -= 10**5
         return logL
 
     def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
@@ -252,7 +252,7 @@ class ImageLinearFit(ImageModel):
         - first (optional) computing differential extinctions)
         - adding linear components of the lensed source(s)
         - adding linear components of the unlensed components (i.e. deflector)
-        - adding point sources (can be multiply lensed or stars in the field)
+        - adding point soources (can be multiply lensed or stars in the field)
 
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles

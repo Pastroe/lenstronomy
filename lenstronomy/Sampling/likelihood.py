@@ -123,7 +123,7 @@ class LikelihoodModule(object):
         :param kwargs_time_delay: keyword arguments for time delay likelihood
         :return: updated model instances of this class
         """
-
+        print(kwargs_model)
         lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(**kwargs_model)
         self.PointSource = point_source_class
 
@@ -150,7 +150,7 @@ class LikelihoodModule(object):
         if self._check_bounds is True:
             penalty, bound_hit = self.check_bounds(args, self._lower_limit, self._upper_limit, verbose=verbose)
             if bound_hit is True:
-                return -10**15
+                return -np.inf
         return self.log_likelihood(kwargs_return, verbose=verbose)
 
     def log_likelihood(self, kwargs_return, verbose=False):

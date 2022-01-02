@@ -36,3 +36,10 @@ class BoxyDisky(LensProfileBase):
         r_BD = (x_**(C_0+2) + y_**(C_0+2)) ** (1/(C_0+2))
         
         return (x - center_x)*(r_BD/r_) + center_x, (y - center_y)*(r_BD/r_) + center_y
+        
+    def param_dict(self, index):
+        p_dict = {}
+        for param in self.param_names:
+            if param not in ['center_x', 'center_y']:
+                p_dict[param] = param  + '_' + str(index)
+        return p_dict

@@ -15,14 +15,14 @@ _MODELS_SUPPORTED = ['GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'ELLIPSOID', 'MULTI_GAUSSIA
                      'SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP',
                      'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM', 'POWER_LAW', 'NIE',
                      'CHAMELEON', 'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'INTERPOL', 'SLIT_STARLETS',
-                     'SLIT_STARLETS_GEN2']
+                     'SLIT_STARLETS_GEN2', 'EDGEONDISK', 'COMPLEXSPRIAL']
 
 
 class LightModelBase(object):
     """
     class to handle source and lens light models
     """
-    def __init__(self, light_model_list, smoothing=0.001, sersic_major_axis=None):
+    def __init__(self, light_model_list, smoothing=0.001, sersic_major_axis=None, morph_model_list=[]):
         """
 
         :param light_model_list: list of light models
@@ -35,7 +35,7 @@ class LightModelBase(object):
         self.func_list = []
         if sersic_major_axis is None:
             sersic_major_axis = sersic_major_axis_conf
-        for profile_type in light_model_list:
+        for i, profile_type in enumerate(light_model_list):
             if profile_type == 'GAUSSIAN':
                 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
                 self.func_list.append(Gaussian())
@@ -108,6 +108,12 @@ class LightModelBase(object):
             elif profile_type == 'SLIT_STARLETS_GEN2':
                 from lenstronomy.LightModel.Profiles.starlets import SLIT_Starlets
                 self.func_list.append(SLIT_Starlets(second_gen=True))
+            elif profile_type == 'EDGEONDISK':
+                from lenstronomy.LightModel.Profiles.edge_on_disk import EdgeOnDisk
+                self.func_list.append(EdgeOnDisk())
+            elif profile_type == 'COMPLEXSPRIAL':
+                from lenstronomy.LightModel.Profiles.complex_spiral import ComplexSpiral
+                self.func_list.append(ComplexSpiral(morph_model_list[i]))
             else:
                 raise ValueError('No light model of type %s found! Supported are the following models: %s' % (profile_type, _MODELS_SUPPORTED))
         self._num_func = len(self.func_list)

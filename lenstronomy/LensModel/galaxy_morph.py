@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = 'not_sibirrer'
 
 import numpy as np
 from lenstronomy.LensModel.profile_list_base import ProfileListBase
@@ -22,6 +22,7 @@ class GalaxyMorph(ProfileListBase):
         :param k: only evaluate the k-th lens model
         :return: source plane positions corresponding to (x, y) in the image plane
         """
+        print(self.func_list)
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
         if isinstance(k, int):

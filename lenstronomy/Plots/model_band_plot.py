@@ -49,30 +49,23 @@ class ModelBandPlot(ModelBand):
         x_grid, y_grid = self._coords.pixel_coordinates
         self._x_grid = util.image2array(x_grid)
         self._y_grid = util.image2array(y_grid)
-        self._x_center, self._y_center = self._coords.center
 
         self._cmap = plot_util.cmap_conf(cmap_string)
         self._arrow_size = arrow_size
 
     def _critical_curves(self):
         if not hasattr(self, '_ra_crit_list') or not hasattr(self, '_dec_crit_list'):
-            #self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lensModelExt.critical_curve_caustics(
-            #    self._kwargs_lens_partial, compute_window=self._frame_size, grid_scale=self._deltaPix / 5.,
-            #    center_x=self._x_center, center_y=self._y_center)
-
             self._ra_crit_list, self._dec_crit_list = self._lensModelExt.critical_curve_tiling(self._kwargs_lens_partial,
                                                                                         compute_window=self._frame_size,
                                                                                         start_scale=self._deltaPix / 5.,
-                                                                                        max_order=10,
-                                                                                               center_x=self._x_center,
-                                                                                               center_y=self._y_center)
+                                                                                        max_order=10)
         return self._ra_crit_list, self._dec_crit_list
 
     def _caustics(self):
         if not hasattr(self, '_ra_caustic_list') or not hasattr(self, '_dec_caustic_list'):
             ra_crit_list, dec_crit_list = self._critical_curves()
-            self._ra_caustic_list, self._dec_caustic_list = self._lensModel.ray_shooting(ra_crit_list, dec_crit_list,
-                                                                                         self._kwargs_lens_partial)
+            self._ra_caustic_list, self._dec_caustic_list = self._lensModel.ray_shooting(ra_crit_list,
+                                                                                     dec_crit_list, self._kwargs_lens_partial)
         return self._ra_caustic_list, self._dec_caustic_list
 
     def data_plot(self, ax, v_min=None, v_max=None, text='Observed',
@@ -112,7 +105,8 @@ class ModelBandPlot(ModelBand):
                    font_size=15, text='Reconstructed', **kwargs):
         """
 
-        :param ax: matplotib axis instance
+        :param ax:
+        :param model:
         :param v_min:
         :param v_max:
         :return:
@@ -150,8 +144,11 @@ class ModelBandPlot(ModelBand):
                          **kwargs):
         """
 
-        :param ax: matplotib axis instance
-        :return: convergence plot in ax instance
+        :param x_grid:
+        :param y_grid:
+        :param kwargs_lens:
+        :param kwargs_else:
+        :return:
         """
         if not 'cmap' in kwargs:
             kwargs['cmap'] = self._cmap
@@ -377,7 +374,7 @@ class ModelBandPlot(ModelBand):
         cb.set_label(r'error variance', fontsize=font_size)
         if with_caustics:
             ra_caustic_list, dec_caustic_list = self._caustics()
-            plot_util.plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b', points_only=True)
+            plot_util.plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b')
         plot_util.scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False, font_size=font_size)
         plot_util.coordinate_arrows(ax, d_s, coords_source,
                           arrow_size=self._arrow_size, color='w', font_size=font_size)

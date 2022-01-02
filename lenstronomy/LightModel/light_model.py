@@ -21,7 +21,9 @@ class LightModel(LinearBasis):
 
     """
 
-    def __init__(self, light_model_list, deflection_scaling_list=None, source_redshift_list=None,
+    def __init__(self, light_model_list, 
+                 galaxy_morph = False, morph_model_list = [], 
+                 deflection_scaling_list=None, source_redshift_list=None,
                  smoothing=0.001, sersic_major_axis=None):
         """
 
@@ -36,7 +38,12 @@ class LightModel(LinearBasis):
          half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
          convention in the lenstronomy yaml setting (which by default is =False)
         """
-        super(LightModel, self).__init__(light_model_list=light_model_list, smoothing=smoothing,
-                                         sersic_major_axis=sersic_major_axis)
+        if galaxy_morph:
+            super(LightModel, self).__init__(light_model_list=light_model_list, smoothing=smoothing,
+                                            sersic_major_axis=sersic_major_axis, morph_model_list = morph_model_list)
+        else:
+            super(LightModel, self).__init__(light_model_list=light_model_list, smoothing=smoothing,
+                                            sersic_major_axis=sersic_major_axis)
         self.deflection_scaling_list = deflection_scaling_list
         self.redshift_list = source_redshift_list
+        
