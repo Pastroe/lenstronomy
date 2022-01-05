@@ -23,21 +23,53 @@ class PHT(LensProfileBase):
     def mapping(self, x, y, r_in, r_scale, theta_out, alpha, center_x=0, center_y=0):
         """
 
-        :param x: x-coord (in angles)
-        :param y: y-coord (in angles)
-        :param C_0: Einstein radius (in angles)
-        :return: deflection angle (in angles)
+        :param x: x-coord of the image
+        :param y: y-coord of the image
+        :param r_in: the inner radius of the spiral arm
+        :param r_scale: the scale of spiral arm in radius; r_in + r_scale = r_out
+        :param theta_out: the total rotation angle of spiral arm
+        :param alpha: the power-law index of spiral arms
+        :return: x, y-coord of the source
         """
-        #print('Referred deri')
+        x_ = x - center_x
+        y_ = y - center_y
+        
+        # See the GALFIT II paper for more detail
         CDEF = 0.23
         A = (2 * CDEF) / (np.abs(theta_out) + CDEF) - 1.00001
         B = (2 - np.arctanh(A)) * (r_in + r_scale) / r_scale
-        x_ = x - center_x
-        y_ = y - center_y
+
         r_ = ((x_ ** 2) + (y ** 2)) ** (1/2)
         theta_rot = theta_out * 0.5 * (np.tanh(B * (r_ / (r_in + r_scale) - 1) + 2) + 1) * (0.5 * (1 + r_ / (r_in + r_scale)))**alpha
+        
         x_rot = x_ * np.cos(theta_rot) + y_ * np.sin(theta_rot)
         y_rot =-x_ * np.sin(theta_rot) + y_ * np.cos(theta_rot)
+        return x_rot + center_x, y_rot + center_y
+        
+    def reverse_mapping(self, x, y, r_in, r_scale, theta_out, alpha, center_x=0, center_y=0):
+        """
+
+        :param x: x-coord of the source
+        :param y: y-coord of the source
+        :param r_in: the inner radius of the spiral arm
+        :param r_scale: the scale of spiral arm in radius; r_in + r_scale = r_out
+        :param theta_out: the total rotation angle of spiral arm
+        :param alpha: the power-law index of spiral arms
+        :return: x, y-coord of the image
+        """
+        x_ = x - center_x
+        y_ = y - center_y
+        
+        # See the GALFIT II paper for more detail
+        CDEF = 0.23
+        A = (2 * CDEF) / (np.abs(theta_out) + CDEF) - 1.00001
+        B = (2 - np.arctanh(A)) * (r_in + r_scale) / r_scale
+
+        r_ = ((x_ ** 2) + (y ** 2)) ** (1/2)
+        theta_rot = theta_out * 0.5 * (np.tanh(B * (r_ / (r_in + r_scale) - 1) + 2) + 1) * (0.5 * (1 + r_ / (r_in + r_scale)))**alpha
+        
+        x_rot = x_ * np.cos(theta_rot) - y_ * np.sin(theta_rot)
+        y_rot = x_ * np.sin(theta_rot) + y_ * np.cos(theta_rot)
         return x_rot + center_x, y_rot + center_y
         
     def param_dict(self, index):
