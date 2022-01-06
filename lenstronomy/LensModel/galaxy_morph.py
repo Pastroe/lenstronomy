@@ -61,7 +61,7 @@ class GalaxyMorph(ProfileListBase):
     def polar_chessboard(self, x, y, spatial_freq_r=1, spatial_freq_phi=np.pi/6):
         r = (x**2 + y**2)**0.5
         phi = np.arctan2(y, x)
-        return (r % spatial_freq_r > spatial_freq_r / 2) * (phi % spatial_freq_phi > spatial_freq_phi / 2)
+        return (r % spatial_freq_r > spatial_freq_r / 2) ^ (phi % spatial_freq_phi > spatial_freq_phi / 2)
     
     def cart_chessboard(self, x, y, spatial_freq_x = 1, spatial_freq_y = 1):
-        return (x % spatial_freq_x > spatial_freq_x / 2) * (y % spatial_freq_y > spatial_freq_y / 2)
+        return (x % spatial_freq_x > spatial_freq_x / 2) ^ (y % spatial_freq_y > spatial_freq_y / 2)
